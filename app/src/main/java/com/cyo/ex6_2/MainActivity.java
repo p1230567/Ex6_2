@@ -1,6 +1,9 @@
 package com.cyo.ex6_2;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+
 
 public class MainActivity extends Activity {
-
+    private final static String TAG = "fragment";
     private EditText et_hight, et_weight;
     private Button btn_sumbit, btn_clear;
 
@@ -22,6 +27,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findVIews();
+
     }
 
     protected void findVIews() {
@@ -33,38 +39,8 @@ public class MainActivity extends Activity {
         btn_sumbit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-//                設定該按鍵點擊時intent到BMI_Result
-                intent.setClass(MainActivity.this, BMI_Result.class);
-//                new夾帶資料包裹
-                Bundle bundle = new Bundle();
-                try {
-//                    取得文字字串、Double的內容
-                    String hight = et_hight.getText().toString();
-                    String weight = et_weight.getText().toString();
-                    Double double_Hight = Double.parseDouble(hight);
-                    Double double_weight = Double.parseDouble(weight);
-//                    未輸入的例外處理
-                    if (hight.isEmpty() || weight.isEmpty()) {
-                        throw new Exception();
-//                        輸入範圍例外處理
-                    } else if (double_Hight <= 0 | double_Hight >= 3 || double_weight <= 0 | double_weight >= 500) {
-                        throw new Exception();
-                    }
-//將資料放入bundle(K,V)
-                    bundle.putDouble("hight", double_Hight);
-                    bundle.putDouble("weight", double_weight);
 
-                } catch (Exception e) {
-//                    例外處理，提醒文字及清空EditView
-                    Toast.makeText(MainActivity.this, "資料有誤", Toast.LENGTH_SHORT).show();
-                    et_weight.setText("");
-                    et_hight.setText("");
-                    return;
-                }
-
-                intent.putExtras(bundle);
-                startActivity(intent);
+                addFragment();
 
 
             }
@@ -79,6 +55,47 @@ public class MainActivity extends Activity {
             }
         });
 
+    }
+
+    private void addFragment() {
+        Fragment fragment = new Fragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
+        try {
+//                    取得文字字串、Double的內容
+            String hight = et_hight.getText().toString();
+            String weight = et_weight.getText().toString();
+            Double double_Hight = Double.parseDouble(hight);
+            Double double_weight = Double.parseDouble(weight);
+            DecimalFormat decimalFormat = new DecimalFormat("##.##");
+//        計算BMI
+            Double BMI = double_weight / (double_Hight * double_Hight);
+            String result = "";
+            if (BMI < 18.5) {
+                result = "BMI值為:" + decimalFormat.format(BMI) + "\n" + "過瘦";
+            } else if (BMI >= 24) {
+                result = "BMI值為:" + decimalFormat.format(BMI) + "\n" + "過重";
+            } else {
+                result = "BMI值為:" + decimalFormat.format(BMI) + "\n" + "正常";
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("result", result);
+            BMI_Result bmi_result = new BMI_Result();
+            bmi_result.setArguments(bundle);
+            transaction.add(R.id.MainActivity, fragment, TAG);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.commit();
+
+
+        } catch (Exception e) {
+//                    例外處理，提醒文字及清空EditView
+            Toast.makeText(MainActivity.this, "資料有誤", Toast.LENGTH_SHORT).show();
+            et_weight.setText("");
+            et_hight.setText("");
+            return;
+        }
     }
 
 

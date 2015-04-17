@@ -18,53 +18,28 @@ public class BMI_Result extends Fragment {
     private Button btn_back;
     private TextView tv_result;
 
-  public BMI_Result(){
-      super();
-  }
+    public BMI_Result() {
+        super();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bmi_result, container, false);
         btn_back = (Button) view.findViewById(R.id.btn_back);
         tv_result = (TextView) view.findViewById(R.id.tv_result);
+        String result = getArguments().getString("result");
+        tv_result.setText(result);
+
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//              返回
-                BMI_Result.this.finish();
+//
+//           返回
             }
         });
 
+
         return view;
-    }
-
-    protected void findViews() {
-
-
-
-
-    }
-
-    private void showinfo() {
-//      新建bundle取得intent內容
-        Bundle bundle = this.getIntent().getExtras();
-//        取得傳過來的Double物件，key為"hight"、weight
-        Double hight = bundle.getDouble("hight");
-        Double weight = bundle.getDouble("weight");
-//        將Double物件轉成##.##的String物件
-        DecimalFormat decimalFormat = new DecimalFormat("##.##");
-//        計算BMI
-        Double BMI = weight / (hight * hight);
-
-        if (BMI < 18.5) {
-            tv_result.setText("BMI值為:" + decimalFormat.format(BMI) + "\n" + "過瘦");
-        } else if (BMI >= 24) {
-            tv_result.setText("BMI值為:" + decimalFormat.format(BMI) + "\n" + "過重");
-        } else {
-            tv_result.setText("BMI值為:" + decimalFormat.format(BMI) + "\n" + "正常");
-        }
-
-
     }
 
 }
