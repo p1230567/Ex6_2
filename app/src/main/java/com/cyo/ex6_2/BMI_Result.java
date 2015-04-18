@@ -17,7 +17,7 @@ import java.text.DecimalFormat;
 public class BMI_Result extends Fragment {
     private Button btn_back;
     private TextView tv_result;
-
+private BMI_Result bmi_result;
     public BMI_Result() {
         super();
     }
@@ -27,6 +27,7 @@ public class BMI_Result extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bmi_result, container, false);
@@ -38,8 +39,10 @@ public class BMI_Result extends Fragment {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//
+                BMI_Cul_Fragment fragment = new BMI_Cul_Fragment();
+                getFragmentManager().beginTransaction().replace(R.id.MainActivity, fragment).commit();
 //           返回
+                bmi_result.onDestroyView();
             }
         });
 
@@ -47,4 +50,13 @@ public class BMI_Result extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
