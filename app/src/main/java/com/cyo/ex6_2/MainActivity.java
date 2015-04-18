@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findVIews();
+//            BMI_Cul_Fragment BMI_Cul_Fragment = new BMI_Cul_Fragment();
+//            getFragmentManager().beginTransaction().replace(R.id.MainActivity, BMI_Cul_Fragment).commit();
 
     }
 
@@ -58,7 +61,6 @@ public class MainActivity extends Activity {
     }
 
     private void addFragment() {
-        Fragment fragment = new Fragment();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -84,10 +86,10 @@ public class MainActivity extends Activity {
             bundle.putString("result", result);
             BMI_Result bmi_result = new BMI_Result();
             bmi_result.setArguments(bundle);
-            transaction.add(R.id.MainActivity, fragment, TAG);
+            transaction.add(R.id.MainActivity, bmi_result, TAG);
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             transaction.commit();
-
+            
 
         } catch (Exception e) {
 //                    例外處理，提醒文字及清空EditView
