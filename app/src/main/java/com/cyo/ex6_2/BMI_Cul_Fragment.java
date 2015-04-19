@@ -18,22 +18,18 @@ import java.text.DecimalFormat;
  */
 public class BMI_Cul_Fragment extends Fragment {
     private View view;
-    private final static String TAG = "fragment";
     private EditText et_hight, et_weight;
     private Button btn_sumbit, btn_clear;
 
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
+    //  當這個Fragment VIEW呈現時要執行的layout 以及各UI要執行的動作在此設定
+//    系统在Fragment第一次繪製其介面时使用用這個方法。要繪製的UI就必須從這個方法返回一個佈局的View，
+//      如果Fragment不提供UI，可以只返回一個null。
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//      將這個做好的view回傳inflater到container(Mainactivity)上，並且使用false表示不貼在container上回傳
         view = inflater.inflate(R.layout.bmi_cul, container, false);
         findVIews();
-
-
         return view;
     }
 
@@ -42,13 +38,12 @@ public class BMI_Cul_Fragment extends Fragment {
         et_hight = (EditText) view.findViewById(R.id.et_hight);
         btn_clear = (Button) view.findViewById(R.id.btn_clear);
         et_weight = (EditText) view.findViewById(R.id.et_weight);
-
+//      按下送出的按鈕之後的事件
         btn_sumbit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//             按下按鍵之後新增一個fragment
                 addFragment();
-
 
             }
         });
@@ -65,10 +60,10 @@ public class BMI_Cul_Fragment extends Fragment {
     }
 
     private void addFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-
+//      try-catch內計算BMI
+//        result存放計算結果的字串
+        String result;
         try {
 //                    取得文字字串、Double的內容
             String hight = et_hight.getText().toString();
@@ -78,7 +73,7 @@ public class BMI_Cul_Fragment extends Fragment {
             DecimalFormat decimalFormat = new DecimalFormat("##.##");
 //        計算BMI
             Double BMI = double_weight / (double_Hight * double_Hight);
-            String result = "";
+
             if (BMI < 18.5) {
                 result = "BMI值為:" + decimalFormat.format(BMI) + "\n" + "過瘦";
             } else if (BMI >= 24) {
@@ -86,23 +81,30 @@ public class BMI_Cul_Fragment extends Fragment {
             } else {
                 result = "BMI值為:" + decimalFormat.format(BMI) + "\n" + "正常";
             }
-            Bundle bundle = new Bundle();
-            bundle.putString("result", result);
-            BMI_Result bmi_result = new BMI_Result();
-            bmi_result.setArguments(bundle);
-            transaction.add(R.id.MainActivity, bmi_result, TAG);
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            transaction.commit();
 
 
         } catch (Exception e) {
 //                    例外處理，提醒文字及清空EditView
-//            Toast.makeText(MainActivity, "資料有誤", Toast.LENGTH_SHORT).show();
+//            利用getActivity取得content
+            Toast.makeText(getActivity(), "資料有誤", Toast.LENGTH_SHORT).show();
             et_weight.setText("");
             et_hight.setText("");
             return;
         }
+//       建立bundle傳送資料
+        Bundle bundle = new Bundle();
+//        放入到(K,V)
+        bundle.putString("result", result);
+//        上面處理完之後，準備要傳送到result，建立該fragment
+        BMI_Result bmi_result = new BMI_Result();
+//          利用setArguments傳遞參數資料
+        bmi_result.setArguments(bundle);
+//        直接取得FragmentManager，及beginTransaction去replace掉bmi_result，最後提交
+        getFragmentManager().beginTransaction().replace(R.id.MainActivity, bmi_result).commit();
+
+
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

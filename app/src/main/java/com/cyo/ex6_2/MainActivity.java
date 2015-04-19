@@ -7,15 +7,22 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends Activity {
-
+//利用開啟APP後就create第一個fragment，之後則利用replace進行兩個fragment之間的轉換
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        onCreate MainActivity之後直接add Fragment
+//        new 計算頁的BMI_Cul_Fragment 的Fragment
+//        先做好各Fragment的佈局XML
 
         BMI_Cul_Fragment BMI_Cul_Fragment = new BMI_Cul_Fragment();
-        getFragmentManager().beginTransaction().replace(R.id.MainActivity, BMI_Cul_Fragment).commit();
+//        取得Fragment管理，開始傳輸事項，在欲傳輸的功能添加add增加BMI_Cul_Fragment()這個Fragment
+//        在R.id.MainActivity上，最後commit提交，如此一來一進入APP則立即呈現
+//        BMI_Cul_Fragment這個Fragment
+
+        getFragmentManager().beginTransaction().add(R.id.MainActivity, BMI_Cul_Fragment).commit();
 
     }
 
